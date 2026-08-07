@@ -1,58 +1,74 @@
 import pyautogui
 import time
-
 time.sleep(4)
 
-print("Welcome to Automate Diagram...")
+print("welcome to automate diagram...")
 
-position = []
+position=[]
+print("""
+        1)RECORD
+        2)REPLAY
+        3)VIEW POSTIONS
+        4) EXIT
+        5) SAVE""")
 
-while True:
-    choice = input("""
-Enter the choice:
-1) RECORD
-2) REPLAY
-3) VIEW POSITION
-4) EXIT
-5) SAVE THE POSITION TO FILE
-
-Choice: """)
-
-    if choice == "1":
+def record_postion():
         while True:
-            user = input("Want to take position? (yes/no): ")
-
-            if user.lower() != "yes":
-                break
-
-            load = pyautogui.position()
-            print(load)
-            position.append(load)
-
-    elif choice == "2":
+                user=input("do u want to take positions")
+                if user.lower()!='yes':
+                    break
+                else:
+                    pyautogui.position()
+                    if len(position)>9:
+                        print('positons limit has been reached')
+                        break
+                    else:
+                        a=pyautogui.position()
+                        position.append(a)
+                        print('position has been captured',position)
+def replay_position():
         if not position:
-            print("No positions are recorded to replay.")
+            print('please take positions first')
         else:
-            print("Replaying positions...")
-            for pos in position:
-                pyautogui.dragTo(pos[0], pos[1], duration=2)
-
-    elif choice == "3":
+            for postions in position:
+                pyautogui.dragTo(postions,duration=2)
+                print('movement has been completed')
+def view_position():
         if not position:
-            print("No positions recorded.")
+            print('no positions has been stored...')
         else:
             print(position)
+def exit_terminal():
+        print('thank you..')
+        exit()
+def save_position():
+        if position:
+            try:
+                file=input('enter the file name you want to store')
+                with open(file + '.txt','x') as file:
+                    file.write(str(position)+ '\n' )
+            except FileExistsError:
+                print('same file has already has been created try again...')
+                    
+        else:
+            print('no position are there to capture')
+while True:
+    try:
+        choice=int(input('enter the choice number'))
+        if choice==1:
+            record_postion()
+        elif choice==2:
+            replay_position()
+        elif choice==3:
+            view_position()
+        elif choice==4:
+            exit_terminal()
+        elif choice==5:
+            save_position()
+    except ValueError:
+        print('please enter in number format')
+    
+             
 
-    elif choice == "4":
-        print("Exiting...")
-        break
 
-    elif choice == "5":
-        with open("data.txt", "w") as file:
-            for pos in position:
-                file.write(f"{pos[0]},{pos[1]}\n")
 
-        print("Positions saved successfully.")
-
-    else:
-        print("Invalid input.")
